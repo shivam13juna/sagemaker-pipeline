@@ -23,8 +23,8 @@ git_email = os.environ.get('GIT_EMAIL', "sagemaker-processing@example.com")
 
 ml_root = Path("/opt/ml/processing")
 
-dataset_zip = ml_root / "input" / "flower_s12.zip"
-git_path = ml_root / "flower-emlo-s12"
+dataset_zip = ml_root / "input" / "intel_s12.zip"
+git_path = ml_root / "intl-emlo-s12"
 
 def configure_git():
     subprocess.check_call(['git', 'config', '--global', 'user.email', f'"{git_email}"'])
@@ -80,10 +80,14 @@ def generate_train_test_split():
         to_path=dataset_extracted
     )
     
-    dataset_full = list((dataset_extracted / "flowers").glob("*/*.jpg"))
+    dataset_full = list(dataset_extracted.glob("*/*/*/*.jpg"))
     labels = [x.parent.stem for x in dataset_full]
     
     print(":: Dataset Class Counts: ", Counter(labels))
+    
+    
+    d_train = list((dataset_extracted / "seg_train" / "seg_train").glob("*/*.jpg"))
+    d_test = list((dataset_extracted / "seg_test" / "seg_test").glob("*/*.jpg"))
     
     d_train, d_test = train_test_split(dataset_full, stratify=labels)
     
@@ -115,8 +119,8 @@ if __name__=="__main__":
     generate_train_test_split()
         
     print(":: copy data to train")
-    subprocess.check_call('cp -r /opt/ml/processing/flower-emlo-s12/dataset/train/* /opt/ml/processing/dataset/train', shell=True)
-    subprocess.check_call('cp -r /opt/ml/processing/flower-emlo-s12/dataset/test/* /opt/ml/processing/dataset/test', shell=True)
+    subprocess.check_call('cp -r /opt/ml/processing/intl-emlo-s12/dataset/train/* /opt/ml/processing/dataset/train', shell=True)
+    subprocess.check_call('cp -r /opt/ml/processing/intl-emlo-s12/dataset/test/* /opt/ml/processing/dataset/test', shell=True)
     
     print(":: Sync Processed Data to Git & DVC")
     sync_data_with_dvc(repo)

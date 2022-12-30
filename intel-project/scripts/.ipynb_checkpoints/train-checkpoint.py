@@ -42,7 +42,7 @@ def train(model, datamodule, sm_training_env):
     tb_logger = pl_loggers.TensorBoardLogger(save_dir=ml_root / "output" / "tensorboard" / sm_training_env["job_name"])
     
     trainer = pl.Trainer(
-        max_epochs=10,
+        max_epochs=5,
         accelerator="auto",
         logger=[tb_logger]
     )
