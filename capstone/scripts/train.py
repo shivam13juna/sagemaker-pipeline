@@ -30,7 +30,8 @@ test_channel = os.environ.get("SM_CHANNEL_TEST")
 
 ml_root = Path("/opt/ml")
 
-hyperparameters = json.loads(os.environ.get["SM_HPS"])
+print("These are the SM_HPS: ", os.environ.get("SM_HPS"))
+hyperparameters = json.loads(os.environ.get("SM_HPS"))
 
 
 # "model": model,
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         train_data_dir=train_channel,
         test_data_dir=test_channel,
         batch_size=int(hyperparameters.get("batch_size")),
-        num_workers=num_cpus,
+        num_workers=1,
         albumentations=hyperparameters.get("augmentations").replace("'", '"')
     )
     datamodule.setup()
