@@ -178,14 +178,14 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
             shuffle=True,
         )
 
-    # def val_dataloader(self):
-    #     return DataLoader(
-    #         dataset=self.data_train,
-    #         batch_size=self.hparams.batch_size,
-    #         num_workers=self.hparams.num_workers,
-    #         pin_memory=self.hparams.pin_memory,
-    #         shuffle=False,
-    #     )
+    def val_dataloader(self):
+        return DataLoader(
+            dataset=self.data_test,
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            pin_memory=self.hparams.pin_memory,
+            shuffle=False,
+        )
 
     def test_dataloader(self):
         return DataLoader(
