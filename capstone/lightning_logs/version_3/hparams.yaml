@@ -1,0 +1,4 @@
+lr: 0.001
+model_name: resnet18
+num_classes: 6
+optimizer: adam
