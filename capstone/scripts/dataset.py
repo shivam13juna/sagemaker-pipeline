@@ -51,6 +51,8 @@ class IntelDataset(torch.utils.data.Dataset):
             image = transformed["image"]
 
         return image, label
+
+
 #     def __getitem__(self, index):
 #         try:
 #             image = np.array(Image.open(self.data_files[index]))
@@ -77,6 +79,7 @@ class IntelDataset(torch.utils.data.Dataset):
 #             print(sys.exc_info()[0])
 #             raise e
 
+
 class IntelCapstoneDataModule(pl.LightningDataModule):
     def __init__(
         self,
@@ -97,36 +100,37 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
         if self.albumentations is None:
             self.albumentations = "[]"
         self.label_dict = {
-                "buildings": 0,
-                "forest": 1,
-                "glacier": 2,
-                "mountain": 3,
-                "sea": 4,
-                "street": 5,
-            }
-        
+            "buildings": 0,
+            "forest": 1,
+            "glacier": 2,
+            "mountain": 3,
+            "sea": 4,
+            "street": 5,
+        }
 
         self.train_data_dir = train_data_dir
         self.test_data_dir = test_data_dir
         albumentations = json.loads(albumentations.replace("'", '"'))
-        
+
         transform_train = []
         if len(albumentations) >= 1:
             for method in albumentations:
                 if type(method) == dict:
-                    transform_train.append(getattr(A, method.pop('name'))(**method))
+                    transform_train.append(getattr(A, method.pop("name"))(**method))
                 else:
                     transform_train.append(getattr(A, method)())
-                    
+
         transform_train.append(A.Resize(128, 128))
-        transform_train.append(A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
+        transform_train.append(
+            A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        )
         transform_train.append(ToTensorV2())
 
         self.transform_train = A.Compose(transform_train)
-        
 
         self.transform_test = A.Compose(
-            [   A.Resize(128, 128),
+            [
+                A.Resize(128, 128),
                 A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                 ToTensorV2(),
             ]
@@ -209,3 +213,91 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
         pass
 
 
+# transform = A.Compose([
+#     A.Resize(128, 128),
+#     A.HorizontalFlip(),
+#     A.VerticalFlip(),
+#     A.Rotate(limit=30),
+#     A.RandomBrightness(),
+#     A.RandomContrast(),
+#     A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.1, rotate_limit=30),
+#     A.RandomGamma(),
+#     A.ElasticTransform(alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03),
+#     A.GridDistortion(),
+#     A.OpticalDistortion(),
+#     A.RandomRain(drop_length=25, drop_width=1, drop_color=(200, 200, 200), blur_value=7),
+#     A.RandomSnow(snow_point_lower=0.1, snow_point_upper=0.3, brightness_coeff=2),
+#     A.RandomFog(fog_coef_lower=0.3, fog_coef_upper=0.5, alpha_coef=0.08),
+#     A.RandomSunFlare(src_radius=200, intensity_lower=0.1, intensity_upper=0.3, sunlight_type='points'),
+#     A.RandomShadow( shadow_dimension=5),
+#     A.Cutout(num_holes=8, max_h_size=32, max_w_size=32, p=0.5),
+#     A.CoarseDropout(max_holes=8, max_height=32, max_width=32, min_holes=None, min_height=8, min_width=8, fill_value=0, p=0.5),
+#     A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+#     ToTensorV2()
+# ])
+
+
+into = [
+    {"name": "Resize", "height": 128, "width": 128},
+    "HorizontalFlip",
+    "VerticalFlip",
+    {"name": "Rotate", "limit": 30},
+    "RandomBrightness",
+    "RandomContrast",
+    {
+        "name": "ShiftScaleRotate",
+        "shift_limit": 0.0625,
+        "scale_limit": 0.1,
+        "rotate_limit": 30,
+    },
+    "RandomGamma",
+    {
+        "name": "ElasticTransform",
+        "alpha": 120,
+        "sigma": 120 * 0.05,
+        "alpha_affine": 120 * 0.03,
+    },
+    "GridDistortion",
+    "OpticalDistortion",
+    {
+        "name": "RandomRain",
+        "drop_length": 25,
+        "drop_width": 1,
+        "drop_color": (200, 200, 200),
+        "blur_value": 7,
+    },
+    {
+        "name": "RandomSnow",
+        "snow_point_lower": 0.1,
+        "snow_point_upper": 0.3,
+        "brightness_coeff": 2,
+    },
+    {
+        "name": "RandomFog",
+        "fog_coef_lower": 0.3,
+        "fog_coef_upper": 0.5,
+        "alpha_coef": 0.08,
+    },
+    {
+        "name": "RandomSunFlare",
+        "src_radius": 200,
+        "intensity_lower": 0.1,
+        "intensity_upper": 0.3,
+        "sunlight_type": "points",
+    },
+    {"name": "RandomShadow", "shadow_dimension": 5},
+    {"name": "Cutout", "num_holes": 8, "max_h_size": 32, "max_w_size": 32, "p": 0.5},
+    {
+        "name": "CoarseDropout",
+        "max_holes": 8,
+        "max_height": 32,
+        "max_width": 32,
+        "min_holes": None,
+        "min_height": 8,
+        "min_width": 8,
+        "fill_value": 0,
+        "p": 0.5,
+    },
+    {"name": "Normalize", "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
+    "ToTensorV2",
+]

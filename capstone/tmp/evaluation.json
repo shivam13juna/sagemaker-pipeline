@@ -1,1 +1,1 @@
-{"multiclass_classification_metrics": {"accuracy": {"value": 0.7393754124641418, "standard_deviation": "0"}}}
+{"multiclass_classification_metrics": {"accuracy": {"value": 0.7393754124641418, "standard_deviation": "0"}, "robusness": {"value": 0.241, "standard_deviation": "0"}}}
