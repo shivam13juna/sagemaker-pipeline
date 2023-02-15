@@ -113,6 +113,7 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
         albumentations = json.loads(albumentations.replace("'", '"'))
 
         transform_train = []
+        transform_train.append(A.Resize(128, 128))
         if len(albumentations) >= 1:
             for method in albumentations:
                 if type(method) == dict:
@@ -120,7 +121,7 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
                 else:
                     transform_train.append(getattr(A, method)())
 
-        transform_train.append(A.Resize(128, 128))
+       
         transform_train.append(
             A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         )

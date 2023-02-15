@@ -16,6 +16,7 @@ def input_fn(request_body, request_content_type):
     assert request_content_type == "application/json"
     data = json.loads(request_body)["inputs"]
     data = torch.tensor(data, dtype=torch.float32, device=device)
+    print("This is the shape of data while inference: ", data.shape)
     return data
 
 
