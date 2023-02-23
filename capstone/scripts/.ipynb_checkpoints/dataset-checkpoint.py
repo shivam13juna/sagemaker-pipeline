@@ -98,7 +98,7 @@ class IntelCapstoneDataModule(pl.LightningDataModule):
 
         self.albumentations = albumentations
         if self.albumentations is None:
-            self.albumentations = "[]"
+            albumentations = "[]"
         self.label_dict = {
             "buildings": 0,
             "forest": 1,
